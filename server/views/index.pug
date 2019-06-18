@@ -1,0 +1,21 @@
+doctype html
+html
+head
+    link(rel="stylesheet" href="/css/style.css")
+title= title
+body
+    div.app
+        header.common.header
+            code= temperature
+        section.common.section
+            div.databox
+                div.row.lead
+                    div.col Datum
+                    div.col Temperatur
+                    div.col Wassermenge m3/s
+                for entry in history.reverse()
+                    - var time = new Date(entry.timestamp*1000)
+                    div.row
+                        div.col= time.getDate() + '.' + (time.getMonth() +1) + '.' + time.getFullYear()
+                        div.col= entry.flow
+                        div.col= entry.temperature.toFixed(2)

@@ -32,5 +32,8 @@ module.exports = {
         new WebpackShellPlugin({
             onBuildEnd: ['yarn run:dev']
         })
-    ]
+    ],
+    node: {
+        __dirname: false,
+    }
 };
