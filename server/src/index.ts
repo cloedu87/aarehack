@@ -7,6 +7,8 @@ const {
     PORT = 3000,
 } = process.env;
 
+app.locals.dayjs = require('dayjs');
+
 app.use(express.static('public'));
 app.set('view engine', 'pug');
 
@@ -19,7 +21,8 @@ app.get('/', (req: Request, res: Response) => {
 
             res.render('index', {
                 title: 'Hey',
-                temperature: JSON.stringify(aareJson.aare.temperature) + '°C',
+                temperature: JSON.stringify(aareJson.aare.temperature) + ' °C',
+                flow: JSON.stringify(aareJson.aare.flow) + ' m3/s',
                 history: aareJson.aarepast
             })
 

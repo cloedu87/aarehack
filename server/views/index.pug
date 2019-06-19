@@ -7,6 +7,7 @@ body
     div.app
         header.common.header
             code= temperature
+            code= flow
         section.common.section
             div.databox
                 div.row.lead
@@ -16,6 +17,6 @@ body
                 for entry in history.reverse()
                     - var time = new Date(entry.timestamp*1000)
                     div.row
-                        div.col= time.getDate() + '.' + (time.getMonth() +1) + '.' + time.getFullYear()
-                        div.col= entry.flow
+                        div.col= dayjs(time).format('DD.MM.YYYY HH:mm')
                         div.col= entry.temperature.toFixed(2)
+                        div.col= entry.flow
