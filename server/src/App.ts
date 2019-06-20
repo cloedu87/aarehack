@@ -6,6 +6,7 @@ import * as dayjs from 'dayjs';
 import {Emitter} from './sseEmitter';
 import * as bodyParser from "body-parser";
 
+//todo: refactoring to smaller methods / modules add some tests
 class App {
     public express;
 
@@ -13,13 +14,11 @@ class App {
         this.express = express();
         this.mountRoutes();
         this.listen(3000);
-        this.listen(5001);
     }
 
     private mountRoutes(): void {
         const router = express.Router();
         const events = new Emitter();
-
         this.express.use(bodyParser.json());
         this.express.use('/', router);
         this.express.use('/events', router);
@@ -32,25 +31,46 @@ class App {
 
             this.grabit(function (aareJson) {
 
+                let temperature = aareJson ? JSON.stringify(aareJson.aare.temperature) : '';
+                let flow = aareJson ? JSON.stringify(aareJson.aare.flow) : '';
+                let history = aareJson ? aareJson.aarepast : [];
+
                 res.render('index', {
                     title: 'aare hack',
-                    temperature: JSON.stringify(aareJson.aare.temperature),
-                    flow: JSON.stringify(aareJson.aare.flow),
-                    history: aareJson.aarepast
-                })
-            })
+                    temperature: temperature,
+                    flow: flow,
+                    history: history
+                });
+            });
         });
 
         router.get('/events', events.subscribe);
 
         router.post('/', (req: Request, res: Response) => {
 
-            console.log(req.body);
-
             events.publish(req.body);
             res.sendStatus(201);
         });
+
+        //server polling every 10s to get data from remote host and publish update to subscribed clients
+        const serverPolling = () => {
+            try {
+                this.grabit(function (aareJson) {
+
+                    //todo: implement check, so clients get only notified, if data is not equal to last publish :-)
+                    events.publish(aareJson);
+                });
+                setTimeout(serverPolling, 10000);
+
+            } catch (e) {
+                console.log(e.message);
+            }
+        };
+
+        // start server polling
+        serverPolling();
     }
+
     private listen(port: number): void {
 
         this.express.listen(port, (err) => {
@@ -72,8 +92,10 @@ class App {
                 callback(aareJson);
 
             } else {
-                console.log('error: ' + response.statusCode);
-                console.log(body)
+                console.log('error: ' + error);
+                console.log(body ? body : '');
+
+                callback();
             }
         });
     }

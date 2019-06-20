@@ -23,7 +23,6 @@ export class Emitter {
 
         //if event getts triggered, send new data to client
         const onEvent = function (data) {
-            console.log('hooorrrraaaaayyy' + JSON.stringify(data))
 
             let eventData = {
                 temperature: data.aare.temperature,
