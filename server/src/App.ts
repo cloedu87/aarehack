@@ -18,7 +18,6 @@ class App {
     private mountRoutes(): void {
         const router = express.Router();
         const events = new Emitter();
-
         this.express.use(bodyParser.json());
         this.express.use('/', router);
         this.express.use('/events', router);
@@ -51,7 +50,27 @@ class App {
             events.publish(req.body);
             res.sendStatus(201);
         });
+
+        //server polling every 10s to get data from remote host and publish update to subscribed clients
+        const serverPolling = () => {
+            try {
+                this.grabit(function (aareJson) {
+
+                    //todo: implement check, so clients get only notified, if data is not equal to last publish :-)
+                    events.publish(aareJson);
+                });
+                setTimeout(serverPolling, 10000);
+
+            } catch (e) {
+                console.log(e.message);
+            }
+
+        };
+
+        // start server polling
+        serverPolling();
     }
+
     private listen(port: number): void {
 
         this.express.listen(port, (err) => {
