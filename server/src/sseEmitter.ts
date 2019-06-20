@@ -25,9 +25,14 @@ export class Emitter {
         const onEvent = function (data) {
             console.log('hooorrrraaaaayyy' + JSON.stringify(data))
 
+            let eventData = {
+                temperature: data.aare.temperature,
+                flow: data.aare.flow
+            };
+
             res.write('retry: 500\n');
             res.write(`event: event\n`);
-            res.write(`data: ${JSON.stringify(data)}\n\n`);
+            res.write(`data: ${JSON.stringify(eventData)}\n\n`);
         };
 
         this.emitter.on('event', onEvent);
@@ -37,8 +42,9 @@ export class Emitter {
             //kill constant signal to client
             clearInterval(heartbeat);
 
-            //kill http connection
-            this.emitter.removeListener('event', onEvent);
+            //kill http connection if emitter/connection is alive
+            if(this.emitter)
+                this.emitter.removeListener('event', onEvent);
         });
     };
 
