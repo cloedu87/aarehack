@@ -3,19 +3,13 @@ html
 head
     link(rel="stylesheet" href="/css/style.css")
 title= title
-script.
-    const source = new EventSource('/events');
 
-     source.addEventListener('event', function(event) {
-          const data = JSON.parse(event.data);
-          document.getElementById('temperature').innerHTML=JSON.stringify(data.temperature) + ' °C';
-          document.getElementById('flow').innerHTML=JSON.stringify(data.flow) + ' m3/s';
-     },false);
 body
     div.app
         header.common.header
-            code#temperature= temperature
-            code#flow= flow
+            div#main-info
+                div#temperature= temperature + ' °C'
+                div#flow= flow + ' m3/s'
         section.common.section
             div.databox
                 div.row.lead
@@ -28,3 +22,20 @@ body
                         div.col= dayjs(time).format('DD.MM.YYYY HH:mm')
                         div.col= entry.temperature.toFixed(2)
                         div.col= entry.flow
+script.
+    const source = new EventSource('/events');
+    const mainInfo = document.getElementById('main-info');
+    const temperatureInfo = document.getElementById('temperature')
+    const flowInfo = document.getElementById('flow');
+
+    source.addEventListener('event', function(event) {
+      const data = JSON.parse(event.data);
+      temperatureInfo.innerHTML=JSON.stringify(data.temperature) + ' °C';
+      flowInfo.innerHTML=JSON.stringify(data.flow) + ' m3/s';
+      mainInfo.style.animation = 'vibrate 1s linear';
+
+    },false);
+
+    mainInfo.addEventListener('animationend', () => {
+        mainInfo.style.animation = '';
+    });

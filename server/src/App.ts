@@ -13,7 +13,6 @@ class App {
         this.express = express();
         this.mountRoutes();
         this.listen(3000);
-        this.listen(5001);
     }
 
     private mountRoutes(): void {
@@ -32,20 +31,22 @@ class App {
 
             this.grabit(function (aareJson) {
 
+                let temperature = aareJson ? JSON.stringify(aareJson.aare.temperature) : '';
+                let flow = aareJson ? JSON.stringify(aareJson.aare.flow) : '';
+                let history = aareJson ? aareJson.aarepast : [];
+
                 res.render('index', {
                     title: 'aare hack',
-                    temperature: JSON.stringify(aareJson.aare.temperature),
-                    flow: JSON.stringify(aareJson.aare.flow),
-                    history: aareJson.aarepast
-                })
-            })
+                    temperature: temperature,
+                    flow: flow,
+                    history: history
+                });
+            });
         });
 
         router.get('/events', events.subscribe);
 
         router.post('/', (req: Request, res: Response) => {
-
-            console.log(req.body);
 
             events.publish(req.body);
             res.sendStatus(201);
@@ -72,8 +73,10 @@ class App {
                 callback(aareJson);
 
             } else {
-                console.log('error: ' + response.statusCode);
-                console.log(body)
+                console.log('error: ' + error);
+                console.log(body ? body : '');
+
+                callback();
             }
         });
     }
