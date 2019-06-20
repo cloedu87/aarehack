@@ -6,6 +6,7 @@ import * as dayjs from 'dayjs';
 import {Emitter} from './sseEmitter';
 import * as bodyParser from "body-parser";
 
+//todo: refactoring to smaller methods / modules add some tests
 class App {
     public express;
 
@@ -64,7 +65,6 @@ class App {
             } catch (e) {
                 console.log(e.message);
             }
-
         };
 
         // start server polling
