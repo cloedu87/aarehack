@@ -23,6 +23,8 @@ export class Emitter {
 
         //if event getts triggered, send new data to client
         const onEvent = function (data) {
+            console.log('hooorrrraaaaayyy' + JSON.stringify(data))
+
             res.write('retry: 500\n');
             res.write(`event: event\n`);
             res.write(`data: ${JSON.stringify(data)}\n\n`);

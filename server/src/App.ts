@@ -4,6 +4,7 @@ import {Response} from "express";
 import * as request from 'request';
 import * as dayjs from 'dayjs';
 import {Emitter} from './sseEmitter';
+import * as bodyParser from "body-parser";
 
 class App {
     public express;
@@ -19,6 +20,7 @@ class App {
         const router = express.Router();
         const events = new Emitter();
 
+        this.express.use(bodyParser.json());
         this.express.use('/', router);
         this.express.use('/events', router);
         this.express.use(express.static('public'));
@@ -41,8 +43,14 @@ class App {
 
         router.get('/events', events.subscribe);
 
-    }
+        router.post('/', (req: Request, res: Response) => {
 
+            console.log(req.body);
+
+            events.publish(req.body);
+            res.sendStatus(201);
+        });
+    }
     private listen(port: number): void {
 
         this.express.listen(port, (err) => {
