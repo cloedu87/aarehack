@@ -8,13 +8,14 @@ script.
 
      source.addEventListener('event', function(event) {
           const data = JSON.parse(event.data);
-          alert('new data arived!');
+          document.getElementById('temperature').innerHTML=JSON.stringify(data.temperature) + ' °C';
+          document.getElementById('flow').innerHTML=JSON.stringify(data.flow) + ' m3/s';
      },false);
 body
     div.app
         header.common.header
-            code= temperature
-            code= flow
+            code#temperature= temperature
+            code#flow= flow
         section.common.section
             div.databox
                 div.row.lead
