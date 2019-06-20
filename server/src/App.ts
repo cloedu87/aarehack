@@ -34,8 +34,8 @@ class App {
 
                 res.render('index', {
                     title: 'aare hack',
-                    temperature: JSON.stringify(aareJson.aare.temperature) + ' °C',
-                    flow: JSON.stringify(aareJson.aare.flow) + ' m3/s',
+                    temperature: JSON.stringify(aareJson.aare.temperature),
+                    flow: JSON.stringify(aareJson.aare.flow),
                     history: aareJson.aarepast
                 })
             })
@@ -65,7 +65,7 @@ class App {
     private grabit(callback: CallableFunction): void {
 
         request.get('https://aareguru.existenz.ch/v2018/current?city=bern', {timeout: 1000}, function (error, response, body) {
-            if (response.statusCode == 200) {
+            if (response && response.statusCode == 200) {
 
                 let aareJson = JSON.parse(body);
 
