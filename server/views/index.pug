@@ -3,6 +3,13 @@ html
 head
     link(rel="stylesheet" href="/css/style.css")
 title= title
+script.
+    const source = new EventSource('/events');
+
+     source.addEventListener('event', function(event) {
+          const data = JSON.parse(event.data);
+          alert('new data arived!');
+     },false);
 body
     div.app
         header.common.header

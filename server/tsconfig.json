@@ -2,9 +2,17 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "sourceMap": true
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "./build"
   },
   "exclude": [
     "node_modules"
+  ],
+  "files": [
+    "./node_modules/@types/node/index.d.ts"
+  ],
+  "include": [
+    "src/**/*.ts"
   ]
 }

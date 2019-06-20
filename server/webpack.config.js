@@ -6,7 +6,7 @@ const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './src/App.ts',
     mode: NODE_ENV,
     target: 'node',
     output: {
