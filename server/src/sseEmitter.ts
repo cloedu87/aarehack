@@ -22,29 +22,32 @@ export class Emitter {
         });
 
         //if event getts triggered, send new data to client
-        const onEvent = function (data) {
+        const onEvent = (data) => {
 
             let eventData = {
                 temperature: data.aare.temperature,
                 flow: data.aare.flow
             };
 
-            res.write('retry: 500\n');
-            res.write(`event: event\n`);
+            res.write(`id: ${(new Date()).toLocaleTimeString()}\n`);
+            res.write('retry: 100\n');
+            res.write('event: event\n');
             res.write(`data: ${JSON.stringify(eventData)}\n\n`);
         };
 
         this.emitter.on('event', onEvent);
 
-        req.on('close', function () {
+        const closeEventLink = () => {
 
             //kill constant signal to client
             clearInterval(heartbeat);
 
             //kill http connection if emitter/connection is alive
-            if(this.emitter)
+            if (this.emitter)
                 this.emitter.removeListener('event', onEvent);
-        });
+        };
+
+        req.on('close', closeEventLink);
     };
 
     public publish = (eventData: any) => {
