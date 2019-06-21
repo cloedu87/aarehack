@@ -22,7 +22,7 @@ export class Emitter {
         });
 
         //if event getts triggered, send new data to client
-        const onEvent = function (data) {
+        const onEvent = (data) => {
 
             let eventData = {
                 temperature: data.aare.temperature,
@@ -37,8 +37,7 @@ export class Emitter {
 
         this.emitter.on('event', onEvent);
 
-        //todo: solve like in App.js:71 serverPolling() --> this here doesn't work because no access to this.emitter in the functional context.
-        req.on('close', function () {
+        const closeEventLink = () => {
 
             //kill constant signal to client
             clearInterval(heartbeat);
@@ -46,7 +45,9 @@ export class Emitter {
             //kill http connection if emitter/connection is alive
             if (this.emitter)
                 this.emitter.removeListener('event', onEvent);
-        });
+        };
+
+        req.on('close', closeEventLink);
     };
 
     public publish = (eventData: any) => {
