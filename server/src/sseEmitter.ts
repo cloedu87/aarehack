@@ -29,20 +29,22 @@ export class Emitter {
                 flow: data.aare.flow
             };
 
-            res.write('retry: 500\n');
-            res.write(`event: event\n`);
+            res.write(`id: ${(new Date()).toLocaleTimeString()}\n`);
+            res.write('retry: 100\n');
+            res.write('event: event\n');
             res.write(`data: ${JSON.stringify(eventData)}\n\n`);
         };
 
         this.emitter.on('event', onEvent);
 
+        //todo: solve like in App.js:71 serverPolling() --> this here doesn't work because no access to this.emitter in the functional context.
         req.on('close', function () {
 
             //kill constant signal to client
             clearInterval(heartbeat);
 
             //kill http connection if emitter/connection is alive
-            if(this.emitter)
+            if (this.emitter)
                 this.emitter.removeListener('event', onEvent);
         });
     };
