@@ -56,14 +56,20 @@ class App {
         const serverPolling = () => {
             try {
                 this.grabit(function (aareJson) {
-
-                    //todo: implement check, so clients get only notified, if data is not equal to last publish :-)
-                    events.publish(aareJson);
+                    if(aareJson) {
+                        console.log('serverPolling -> ' + JSON.stringify(aareJson));
+                        //todo: implement check, so clients get only notified, if data is not equal to last publish :-)
+                        events.publish(aareJson);
+                    }
+                    else
+                        console.log('serverPolling -> no data to publish');
                 });
+                //todo: decision of setInterval vs setTimeout: setTimeout executes every "function execution time + given timeout", setInterval executes "every given interval time"
+                //here setTimeout, so we do not act like a bully towards the aare.guru endpoint :-)
                 setTimeout(serverPolling, 10000);
 
             } catch (e) {
-                console.log(e.message);
+                console.log('serverPolling -> '+e.message);
             }
         };
 
@@ -85,7 +91,7 @@ class App {
     private grabit(callback: CallableFunction): void {
 
         request.get('https://aareguru.existenz.ch/v2018/current?city=bern', {timeout: 1000}, function (error, response, body) {
-            if (response && response.statusCode == 200) {
+            if (response && body && response.statusCode == 200) {
 
                 let aareJson = JSON.parse(body);
 
@@ -93,7 +99,7 @@ class App {
 
             } else {
                 console.log('error: ' + error);
-                console.log(body ? body : '');
+                console.log(body ? body : 'body is not present');
 
                 callback();
             }
