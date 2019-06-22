@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 # Bundle app source
-COPY . .
+COPY server .
 
 #map app to port 3000
 EXPOSE 3000
