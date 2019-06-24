@@ -56,8 +56,8 @@ export class Emitter {
     };
 
     private heart(beat: CallableFunction): number {
-
-        //todo: decision of setInterval vs setTimeout: setTimeout executes every "function execution time + given timeout", setInterval executes "every given interval time"
+        //setInterval vs setTimeout: setTimeout executes every "function execution time + given timeout", setInterval executes "every given interval time"
+        //here setTimeout, because @ what what specific time the clients gets their heartbeat is not critical
         return setTimeout(beat, 10000);
     }
 }

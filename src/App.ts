@@ -31,8 +31,8 @@ class App {
 
             this.grabit(function (aareJson) {
 
-                let temperature = aareJson ? JSON.stringify(aareJson.aare.temperature) : '';
-                let flow = aareJson ? JSON.stringify(aareJson.aare.flow) : '';
+                let temperature = aareJson ? aareJson.aare.temperature : '';
+                let flow = aareJson ? aareJson.aare.flow : '';
                 let history = aareJson ? aareJson.aarepast : [];
 
                 res.render('index', {
@@ -56,20 +56,19 @@ class App {
         const serverPolling = () => {
             try {
                 this.grabit(function (aareJson) {
-                    if(aareJson) {
+                    if (aareJson) {
                         console.log('serverPolling -> ' + JSON.stringify(aareJson));
-                        //todo: implement check, so clients get only notified, if data is not equal to last publish :-)
+
                         events.publish(aareJson);
-                    }
-                    else
+                    } else
                         console.log('serverPolling -> no data to publish');
                 });
-                //todo: decision of setInterval vs setTimeout: setTimeout executes every "function execution time + given timeout", setInterval executes "every given interval time"
+                //setInterval vs setTimeout: setTimeout executes every "function execution time + given timeout", setInterval executes "every given interval time"
                 //here setTimeout, so we do not act like a bully towards the aare.guru endpoint :-)
                 setTimeout(serverPolling, 10000);
 
             } catch (e) {
-                console.log('serverPolling -> '+e.message);
+                console.log('serverPolling -> ' + e.message);
             }
         };
 
